@@ -1,3 +1,4 @@
 /producer/target/
 /.idea/yatool.xml
 .idea/
+/worker/target/
