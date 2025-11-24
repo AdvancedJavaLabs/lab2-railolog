@@ -31,11 +31,10 @@ public class TopWordsService {
 
         return wordCount.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(topN)
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
-                        (e1, e2) -> e1,
+                        Math::max,
                         LinkedHashMap::new
                 ));
     }

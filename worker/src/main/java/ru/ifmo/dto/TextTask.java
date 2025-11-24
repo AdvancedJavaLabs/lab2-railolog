@@ -6,7 +6,6 @@ import lombok.Data;
 public class TextTask {
     private String taskId;
     private String text;
-    private String taskType;
     private int topN;
     private String nameReplacement;
 }

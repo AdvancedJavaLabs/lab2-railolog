@@ -22,7 +22,6 @@ public class TestController {
     public TextProcessingResult demoProcessing() {
         TextTask task = new TextTask();
         task.setTaskId("demo-001");
-        task.setTaskType("ALL_TASKS");
         task.setTopN(5);
         task.setNameReplacement("[PERSON]");
         task.setText("Hello, my name is John Smith. This is a wonderful day! " +
