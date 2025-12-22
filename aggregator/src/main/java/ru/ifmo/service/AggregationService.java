@@ -1,6 +1,5 @@
 package ru.ifmo.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class AggregationService {
 
         AggregatedResult aggregated = new AggregatedResult();
         aggregated.setAggregationId(sessionId);
-        aggregated.setTimestamp(LocalDateTime.now());
+//        aggregated.setTimestamp(LocalDateTime.now());
         aggregated.setTotalSections(results.size());
         aggregated.setProcessedTaskIds(results.stream()
                 .map(TextProcessingResult::getTaskId)

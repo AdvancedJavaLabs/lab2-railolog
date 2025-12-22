@@ -2,3 +2,5 @@
 /.idea/yatool.xml
 .idea/
 /worker/target/
+/aggregator/target/
+/producer/src/main/resources/sample-text.txt

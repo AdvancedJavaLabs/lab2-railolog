@@ -1,6 +1,5 @@
 package ru.ifmo.dto;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +8,7 @@ import lombok.Data;
 @Data
 public class AggregatedResult {
     private String aggregationId;
-    private LocalDateTime timestamp;
+//    private LocalDateTime timestamp;
     private int totalSections;
     private List<String> processedTaskIds;
 

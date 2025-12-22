@@ -30,20 +30,20 @@ public class MessagesListener {
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void receiveMessage(String message) {
         log.info("Received message: {}", message);
-        
+
         try {
             // Parse the incoming message as TextTask
             TextTask task = objectMapper.readValue(message, TextTask.class);
-            log.info("Processing task: {} of type: {}", task.getTaskId(), task.getTaskType());
-            
+            log.info("Processing task: {}", task.getTaskId());
+
             // Process the task
             TextProcessingResult result = textProcessingService.processTask(task);
-            
+
             // Send result back to results queue
             sendResult(result);
-            
+
             log.info("Successfully processed task: {}", task.getTaskId());
-            
+
         } catch (JsonProcessingException e) {
             log.error("Failed to parse message as TextTask: {}", e.getMessage());
         } catch (Exception e) {

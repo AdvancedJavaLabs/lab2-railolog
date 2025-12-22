@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,14 +49,14 @@ public class ResultStorageService {
     }
 
     private void saveToFile(AggregatedResult result) throws IOException {
-        String timestamp = result.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-        String filename = String.format("%s_%s.json", result.getAggregationId(), timestamp);
+//        String timestamp = result.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        String filename = String.format("%s_%s.json", result.getAggregationId(), System.currentTimeMillis());
         Path filePath = Paths.get(resultsDirectory, filename);
 
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), result);
         log.info("Saved result to file: {}", filePath.toAbsolutePath());
 
-        saveSummaryReport(result, timestamp);
+        saveSummaryReport(result, "timestamp");
     }
 
     private void saveSummaryReport(AggregatedResult result, String timestamp) throws IOException {
@@ -67,7 +66,7 @@ public class ResultStorageService {
         StringBuilder report = new StringBuilder();
         report.append("=== TEXT PROCESSING AGGREGATION REPORT ===\n");
         report.append("Aggregation ID: ").append(result.getAggregationId()).append("\n");
-        report.append("Timestamp: ").append(result.getTimestamp()).append("\n");
+//        report.append("Timestamp: ").append(result.getTimestamp()).append("\n");
         report.append("Total Sections Processed: ").append(result.getTotalSections()).append("\n");
         report.append("Processed Task IDs: ").append(String.join(", ", result.getProcessedTaskIds())).append("\n\n");
 
