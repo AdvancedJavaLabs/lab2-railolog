@@ -37,15 +37,6 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding resultsBinding(
-            Queue resultsQueue,
-            DirectExchange resultsExchange,
-            @Value("${rabbitmq.results.routing.key}") String routingKey
-    ) {
-        return BindingBuilder.bind(resultsQueue).to(resultsExchange).with(routingKey);
-    }
-
-    @Bean
     public DirectExchange sessionInfoExchange(
             @Value("${rabbitmq.session.exchange.name}") String exchangeName
     ) {

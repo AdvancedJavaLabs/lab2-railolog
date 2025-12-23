@@ -24,10 +24,10 @@ public class RabbitConfig {
     }
 
     @Bean
-    public FanoutExchange tasksExchange(
+    public DirectExchange tasksExchange(
             @Value("${rabbitmq.tasks.exchange.name}") String exchangeName
     ) {
-        return new FanoutExchange(exchangeName);
+        return new DirectExchange(exchangeName);
     }
 
     @Bean

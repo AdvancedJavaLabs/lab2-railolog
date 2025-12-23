@@ -1,5 +1,7 @@
 package ru.ifmo.service;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -7,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.ifmo.dto.SessionInfo;
 import ru.ifmo.dto.TextTask;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +25,9 @@ public class MessagePublisherService {
     
     @Value("${rabbitmq.session.routing.key}")
     private String sessionRoutingKey;
+
+    @Value("${rabbitmq.queue.name}")
+    private String queueName;
     
     public void publishSessionInfo(SessionInfo sessionInfo) {
         try {
@@ -51,7 +54,7 @@ public class MessagePublisherService {
         
         for (TextTask task : tasks) {
             try {
-                rabbitTemplate.convertAndSend(tasksExchange, "", task);
+                rabbitTemplate.convertAndSend(queueName, task);
                 successCount++;
                 log.debug("Published task: {}", task.getTaskId());
             } catch (Exception e) {
@@ -65,16 +68,6 @@ public class MessagePublisherService {
         if (failureCount > 0) {
             throw new RuntimeException(String.format("Failed to publish %d out of %d tasks", 
                                                     failureCount, tasks.size()));
-        }
-    }
-    
-    public void publishTask(TextTask task) {
-        try {
-            rabbitTemplate.convertAndSend(tasksExchange, "", task);
-            log.info("Published single task: {}", task.getTaskId());
-        } catch (Exception e) {
-            log.error("Failed to publish task {}: {}", task.getTaskId(), e.getMessage(), e);
-            throw new RuntimeException("Failed to publish task", e);
         }
     }
 }

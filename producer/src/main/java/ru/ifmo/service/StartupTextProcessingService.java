@@ -24,12 +24,12 @@ public class StartupTextProcessingService {
             log.info("Application started, checking for default text processing...");
             
             // Check if sample text file exists and process it
-            ClassPathResource resource = new ClassPathResource("sample-text.txt");
+            ClassPathResource resource = new ClassPathResource("big.txt");
             if (resource.exists()) {
                 log.info("Found sample text file, processing...");
                 
                 // Copy to temp file for processing
-                Path tempFile = Files.createTempFile("sample-text", ".txt");
+                Path tempFile = Files.createTempFile("big", ".txt");
                 Files.copy(resource.getInputStream(), tempFile, 
                           java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                 

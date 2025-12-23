@@ -24,6 +24,9 @@ public class MessagesListener {
     @Value("${rabbitmq.results.exchange.name}")
     private String resultsExchange;
 
+    @Value("${rabbitmq.results.queue.name}")
+    private String resultsQueue;
+
     @Value("${rabbitmq.results.routing.key}")
     private String resultsRoutingKey;
 
@@ -53,7 +56,7 @@ public class MessagesListener {
 
     private void sendResult(TextProcessingResult result) {
         try {
-            rabbitTemplate.convertAndSend(resultsExchange, resultsRoutingKey, result);
+            rabbitTemplate.convertAndSend(resultsQueue, result);
             log.info("Result sent for task: {}", result.getTaskId());
         } catch (Exception e) {
             log.error("Failed to send result for task {}: {}", result.getTaskId(), e.getMessage(), e);

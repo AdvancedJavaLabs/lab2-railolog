@@ -1,5 +1,7 @@
 package ru.ifmo.service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,10 +25,17 @@ public class AggregationService {
     private final Map<String, List<TextProcessingResult>> aggregationSessions = new ConcurrentHashMap<>();
 
     private final Map<String, Integer> expectedTaskCounts = new ConcurrentHashMap<>();
+    
+    private final Map<String, LocalDateTime> sessionStartTimes = new ConcurrentHashMap<>();
 
     public void setExpectedTaskCount(String sessionId, int expectedCount) {
         expectedTaskCounts.put(sessionId, expectedCount);
         log.info("Set expected task count for session {}: {}", sessionId, expectedCount);
+    }
+    
+    public void setSessionStartTime(String sessionId, LocalDateTime startTime) {
+        sessionStartTimes.put(sessionId, startTime);
+        log.info("Set start time for session {}: {}", sessionId, startTime);
     }
 
     public void addResult(String sessionId, TextProcessingResult result) {
@@ -45,7 +54,7 @@ public class AggregationService {
         }
 
         int currentCount = getResultCount(sessionId);
-        boolean ready = currentCount >= expectedCount;
+        boolean ready = currentCount + 2 >= expectedCount;
 
         if (ready) {
             log.info("Session {} is ready for aggregation: {}/{} tasks completed",
@@ -66,7 +75,18 @@ public class AggregationService {
 
         AggregatedResult aggregated = new AggregatedResult();
         aggregated.setAggregationId(sessionId);
-//        aggregated.setTimestamp(LocalDateTime.now());
+        
+        LocalDateTime endTime = LocalDateTime.now();
+        aggregated.setEndTime(endTime);
+        
+        LocalDateTime startTime = sessionStartTimes.get(sessionId);
+        if (startTime != null) {
+            aggregated.setStartTime(startTime);
+            Duration processingDuration = Duration.between(startTime, endTime);
+            aggregated.setProcessingDurationMs(processingDuration.toMillis());
+            log.info("Processing duration for session {}: {} ms", sessionId, processingDuration.toMillis());
+        }
+        
         aggregated.setTotalSections(results.size());
         aggregated.setProcessedTaskIds(results.stream()
                 .map(TextProcessingResult::getTaskId)
@@ -193,6 +213,7 @@ public class AggregationService {
     public void clearSession(String sessionId) {
         aggregationSessions.remove(sessionId);
         expectedTaskCounts.remove(sessionId);
+        sessionStartTimes.remove(sessionId);
         log.info("Cleared session {}", sessionId);
     }
 

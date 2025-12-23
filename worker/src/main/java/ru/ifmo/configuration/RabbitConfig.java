@@ -23,10 +23,10 @@ public class RabbitConfig {
     }
 
     @Bean
-    public FanoutExchange fanoutExchange(
+    public DirectExchange fanoutExchange(
             @Value("${rabbitmq.exchange.name}") String exchangeName
     ) {
-        return new FanoutExchange(exchangeName);
+        return new DirectExchange(exchangeName);
     }
 
     @Bean
@@ -34,14 +34,6 @@ public class RabbitConfig {
             @Value("${rabbitmq.queue.name}") String queueName
     ) {
         return new Queue(queueName);
-    }
-
-    @Bean
-    public Binding binding(
-            Queue queue,
-            FanoutExchange fanoutExchange
-    ) {
-        return BindingBuilder.bind(queue).to(fanoutExchange);
     }
 
     @Bean
@@ -56,14 +48,5 @@ public class RabbitConfig {
             @Value("${rabbitmq.results.queue.name}") String queueName
     ) {
         return new Queue(queueName);
-    }
-
-    @Bean
-    public Binding resultsBinding(
-            Queue resultsQueue,
-            DirectExchange resultsExchange,
-            @Value("${rabbitmq.results.routing.key}") String routingKey
-    ) {
-        return BindingBuilder.bind(resultsQueue).to(resultsExchange).with(routingKey);
     }
 }

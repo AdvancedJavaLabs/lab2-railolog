@@ -15,7 +15,7 @@ import ru.ifmo.service.AggregationService;
 public class SessionInfoListener {
 
     private final AggregationService aggregationService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     @RabbitListener(queues = "${rabbitmq.session.queue.name}")
     public void receiveSessionInfo(String message) {
@@ -30,6 +30,13 @@ public class SessionInfoListener {
                     sessionInfo.getSessionId(),
                     sessionInfo.getExpectedTaskCount()
             );
+            
+            if (sessionInfo.getStartTime() != null) {
+                aggregationService.setSessionStartTime(
+                        sessionInfo.getSessionId(),
+                        sessionInfo.getStartTime()
+                );
+            }
 
             log.info("Successfully registered session {} with {} expected tasks",
                     sessionInfo.getSessionId(), sessionInfo.getExpectedTaskCount());
