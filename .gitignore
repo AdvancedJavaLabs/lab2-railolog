@@ -1,0 +1,8 @@
+/producer/target/
+/.idea/yatool.xml
+.idea/
+/worker/target/
+/aggregator/target/
+/producer/src/main/resources/sample-text.txt
+/aggregator/results/
+/producer/src/main/resources/big.txt
